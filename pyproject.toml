@@ -111,6 +111,10 @@ doctest_optionflags = [
   "IGNORE_EXCEPTION_DETAIL",
   "ALLOW_UNICODE"
 ]
+markers = [
+  "testsample",
+  "testall",
+]
 
 [tool.isort]
 multi_line_output = 3

@@ -45,7 +45,7 @@ jobs:
           OPENTOPOGRAPHY_API_KEY: ${{ secrets.OPENTOPOGRAPHY_API_KEY }}
         if: ${{ matrix.python-version == '3.12' }}
         run: |
-          nox -s test --python ${{ matrix.python-version }}
+          nox -s test --python ${{ matrix.python-version }} -- -m "not testall"
 
       - name: Test older Python versions
         env:
