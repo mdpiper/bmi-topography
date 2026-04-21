@@ -4,14 +4,13 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '34 4 3 * *'  # 4:34a on third day of the month
+    - cron: "34 4 3 * *" # 4:34a on third day of the month
 
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
 jobs:
-
   test:
     name: Run unit tests
     if: |
@@ -32,7 +31,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - uses: actions/checkout@v4
@@ -45,13 +44,10 @@ jobs:
       - name: Install nox
         run: pip install nox
 
-      - name: Set NO_FETCH for older Python versions
-        run: |
-          if [[ "${{ matrix.python-version }}" != "3.13" ]]; then
-            echo "NO_FETCH=1" >> "$GITHUB_ENV"
-          fi
-
-      - name: Test latest Python version
+      - name: Test
+        env:
+          OPENTOPOGRAPHY_API_KEY: ${{ secrets.OPENTOPOGRAPHY_API_KEY }}
+          NO_FETCH: 1
         run: |
           nox -s test --force-pythons=${{ matrix.python-version }}
 
@@ -60,5 +56,5 @@ jobs:
           nox -s test-bmi --force-pythons=${{ matrix.python-version }}
 
       - name: Coveralls
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'
         uses: AndreMiras/coveralls-python-action@develop
